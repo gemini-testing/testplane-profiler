@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <canvas id="cpuUsage"></canvas>
+    <canvas id="browsers"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+    <script src="http://momentjs.com/downloads/moment.min.js"></script>
+
+    <script type="text/javascript">
+
+var data = {{data}};
+
+var cpuUsageChart = new Chart(document.getElementById('cpuUsage').getContext('2d'), {
+    type: 'bar',
+
+    data: {
+        labels: data.map((point) => point.event || moment(point.date).format('HH:mm:ss')),
+        datasets: [{
+            label: 'cpu usage',
+            backgroundColor: data.map((point) => point.cpu > 80 && 'red' || point.cpu > 50 && 'yellow' || 'green'),
+            data: _.map(data, 'cpu'),
+        }]
+    }
+});
+
+cpuUsageChart.update();
+
+var browsersChart = new Chart(document.getElementById('browsers').getContext('2d'), {
+    type: 'bar',
+
+    data: {
+        labels: data.map((point) => point.event || moment(point.date).format('HH:mm:ss')),
+        datasets: [{
+            label: 'browsers in parallel',
+            backgroundColor: 'blue',
+            data: _.map(data, 'browsers'),
+        }]
+    }
+});
+
+browsersChart.update();
+
+    </script>
+</body>
+</html>
