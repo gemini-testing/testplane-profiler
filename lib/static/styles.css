@@ -1,0 +1,15 @@
+.button {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background: #fff;
+    outline: none;
+}
+
+.button:hover {
+    border-color: #555;
+}
+
+.button_checked {
+    background: #ffeba0;
+    border-color: #cebe7d;
+}

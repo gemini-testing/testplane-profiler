@@ -1,7 +1,7 @@
 {
   "name": "hermione-profiler",
   "version": "0.0.0",
-  "description": "Plugin for hermione, shows cpu usage of main hermione process",
+  "description": "Plugin for hermione for commands execution profiling",
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint && npm run test-unit",
@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/gemini-testing/hermione-profiler#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
+    "fs-extra": "^4.0.2",
+    "gemini-configparser": "^0.4.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -30,6 +33,7 @@
     "eslint": "^3.19.0",
     "eslint-config-gemini-testing": "^2.4.0",
     "mocha": "^3.4.2",
+    "proxyquire": "^1.8.0",
     "sinon": "^2.3.5"
   }
 }
