@@ -99,7 +99,7 @@ describe('plugin', () => {
         });
     });
 
-    ['index.html', 'client-script.js', 'styles.css'].forEach((fileName, i) => {
+    ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
         it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
             initPlugin_({path: 'reportDir'});
 

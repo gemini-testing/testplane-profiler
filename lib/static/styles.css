@@ -1,15 +1,16 @@
-.button {
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    background: #fff;
-    outline: none;
+body {
+    margin: 0;
 }
 
-.button:hover {
-    border-color: #555;
+.table-detail {
+    padding: 10px;
+    background-color: rgba(0, 188, 212, 0.2);
 }
 
-.button_checked {
-    background: #ffeba0;
-    border-color: #cebe7d;
+.rt-tr-group.empty .rt-expandable {
+    pointer-events: none;
+}
+
+.rt-tr-group.empty .rt-expander {
+    display: none;
 }

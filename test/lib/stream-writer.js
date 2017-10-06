@@ -49,13 +49,13 @@ describe('stream writer', () => {
             assert.calledWith(streamStub.write.firstCall, 'const data = [');
         });
 
-        it('should write object with property as "fullTitle"', () => {
+        it('should write object with "n" property as "fullTitle"', () => {
             const stream = StreamWriter.create('report/path');
             const data = dataStub({fullTitle: 'test1'});
 
             stream.write(data);
 
-            assert.property(JSON.parse(streamStub.write.secondCall.args[0]), 'test1');
+            assert.propertyVal(JSON.parse(streamStub.write.secondCall.args[0]), 'n', 'test1');
         });
 
         it('should write object with command list from data', () => {
@@ -63,14 +63,14 @@ describe('stream writer', () => {
             const data = dataStub({
                 fullTitle: 'test1',
                 hermioneCtx: {
-                    commandList: [{ch: [1]}]
+                    commandList: [{cl: [1]}]
                 }
             });
 
             stream.write(data);
             const passedData = JSON.parse(streamStub.write.secondCall.args[0]);
 
-            assert.deepEqual(passedData['test1'].cl, [1]);
+            assert.deepEqual(passedData.cl, [1]);
         });
 
         it('should write object with empty command list if it does not exist in data', () => {
@@ -80,7 +80,7 @@ describe('stream writer', () => {
             stream.write(data);
             const passedData = JSON.parse(streamStub.write.secondCall.args[0]);
 
-            assert.deepEqual(passedData['test1'].cl, []);
+            assert.deepEqual(passedData.cl, []);
         });
 
         it('should divide data chains with comma delimiter', () => {

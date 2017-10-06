@@ -28,7 +28,7 @@ module.exports = (hermione, opts) => {
 
     hermione.on(hermione.events.RUNNER_END, () => {
         writeStream.end();
-        copyToReportDir(pluginConfig.path, ['index.html', 'client-script.js', 'styles.css']);
+        copyToReportDir(pluginConfig.path, ['index.html', 'bundle.min.js', 'styles.css']);
     });
 };
 
