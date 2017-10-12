@@ -3,7 +3,7 @@
 const parseConfig = require('../../lib/config');
 
 describe('config', () => {
-    afterEach(() => delete process.env['profiler_path']);
+    afterEach(() => delete process.env['hermione_profiler_path']);
 
     it('should be enabled by default', () => {
         assert.isTrue(parseConfig({}).enabled);
@@ -19,7 +19,7 @@ describe('config', () => {
         });
 
         it('should be set from environment variable', () => {
-            process.env['profiler_path'] = 'some/path';
+            process.env['hermione_profiler_path'] = 'some/path';
 
             assert.equal(parseConfig({}).path, 'some/path');
         });
