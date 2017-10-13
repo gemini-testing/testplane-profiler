@@ -19,7 +19,7 @@ class Report extends React.Component {
     render() {
         return (
             <Tabs>
-                <Tab label="Тесты">
+                <Tab className="tab" label="Тесты">
                     <PanelTests data={this.countTestCommands()}/>
                 </Tab>
             </Tabs>

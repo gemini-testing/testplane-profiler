@@ -4,7 +4,7 @@ body {
 
 .table-detail {
     padding: 10px;
-    background-color: rgba(0, 188, 212, 0.2);
+    background-color: rgba(2, 183, 150, 0.2);
 }
 
 .rt-tr-group.empty .rt-expandable {
@@ -13,4 +13,8 @@ body {
 
 .rt-tr-group.empty .rt-expander {
     display: none;
+}
+
+.tab {
+    background-color: rgb(2, 160, 124) !important;
 }
