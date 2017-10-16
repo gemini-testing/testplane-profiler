@@ -1,8 +1,6 @@
 'use strict';
 
 const path = require('path');
-const webpack = require('webpack');
-
 const staticPath = path.resolve(__dirname, 'lib', 'static');
 
 module.exports = {
@@ -26,16 +24,5 @@ module.exports = {
                 loader: 'style-loader!css-loader'
             }
         ]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            uglifyOptions: {
-                compress: {
-                    warnings: false,
-                    'drop_console': true,
-                    unsafe: true
-                }
-            }
-        })
-    ]
+    }
 };
