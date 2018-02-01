@@ -4,14 +4,12 @@ import React from 'react';
 import ReactTable from './table';
 import PanelBase from './panel-base.jsx';
 
-class PanelTests extends PanelBase {
+class PanelSessions extends PanelBase {
     getColumns() {
         return [].concat(
             this.commandsCountColumn(),
-            this.testDurationColumn(),
-            this.makeFullWidth(this.testColumn()),
-            this.browserColumn(),
-            this.sessionColumn()
+            this.makeFullWidth(this.sessionColumn()),
+            this.browserColumn()
         );
     }
 
@@ -44,4 +42,4 @@ class PanelTests extends PanelBase {
     }
 }
 
-export default PanelTests;
+export default PanelSessions;

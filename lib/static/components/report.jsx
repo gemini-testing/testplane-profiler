@@ -3,6 +3,9 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import PanelTests from './panel-tests.jsx';
+import PanelSessions from './panel-sessions.jsx';
+import PanelCommands from './panel-commands.jsx';
+import utils from './utils.js';
 
 class Report extends React.Component {
     constructor(props) {
@@ -10,17 +13,17 @@ class Report extends React.Component {
         this.data = props.data;
     }
 
-    countTestCommands() {
-        const countCommands = (test) => _.sum(test.cl.map(countCommands).concat(test.cl.length));
-
-        return _.map(this.data, (test) => _.set(test, 'count', countCommands(test)));
-    }
-
     render() {
         return (
             <Tabs>
                 <Tab className="tab" label="Тесты">
-                    <PanelTests data={this.countTestCommands()}/>
+                    <PanelTests data={utils.prepareDataForTestsTab(this.data)}/>
+                </Tab>
+                <Tab className="tab" label="Сессии">
+                    <PanelSessions data={utils.prepareDataForSessionsTab(this.data)}/>
+                </Tab>
+                <Tab className="tab" label="Команды">
+                    <PanelCommands data={utils.prepareDataForCommandsTab(this.data)}/>
                 </Tab>
             </Tabs>
         )
