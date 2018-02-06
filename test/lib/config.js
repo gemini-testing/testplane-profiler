@@ -3,10 +3,38 @@
 const parseConfig = require('../../lib/config');
 
 describe('config', () => {
-    afterEach(() => delete process.env['hermione_profiler_path']);
+    beforeEach(function() {
+        this.oldArgv = process.argv;
+    });
 
-    it('should be enabled by default', () => {
-        assert.isTrue(parseConfig({}).enabled);
+    afterEach(function() {
+        process.argv = this.oldArgv;
+
+        delete process.env['hermione_profiler_enabled'];
+        delete process.env['hermione_profiler_path'];
+    });
+
+    describe('enabled', () => {
+        it('should be true by default', () => {
+            assert.isTrue(parseConfig({}).enabled);
+        });
+
+        it('should be set from configuration', () => {
+            assert.isFalse(parseConfig({enabled: false}).enabled);
+        });
+
+        it('should be set from cli', () => {
+            process.argv = process.argv.concat('--profiler-enabled', 'false');
+
+            assert.isFalse(parseConfig({}).enabled);
+        });
+
+        it('should be set from environment variable', () => {
+            process.env['hermione_profiler_enabled'] = 'false';
+            console.log(process.argv);
+
+            assert.isFalse(parseConfig({}).enabled);
+        });
     });
 
     describe('path', () => {
@@ -16,6 +44,12 @@ describe('config', () => {
 
         it('should be set from configuration', () => {
             assert.equal(parseConfig({path: 'some/path'}).path, 'some/path');
+        });
+
+        it('should be set from cli', () => {
+            process.argv = process.argv.concat('--profiler-path', 'new/path');
+
+            assert.equal(parseConfig({}).path, 'new/path');
         });
 
         it('should be set from environment variable', () => {
