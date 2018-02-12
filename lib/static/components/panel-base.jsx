@@ -33,30 +33,32 @@ class PanelBase extends React.Component {
         return {
             Header: 'id сессии',
             accessor: 'sid',
-            width: 150
+            width: 200
         };
     }
 
     commandColumn() {
         return {
             Header: 'Название команды',
-            accessor: 'cn'
+            accessor: 'cn',
+            width: 400
         };
     }
 
-    getColumns() {
-        throw new Error('not implemented');
+    commandDurationColumn() {
+        return {
+            Header: 'Время, мс',
+            accessor: 'd',
+            width: 80
+        };
     }
 
-    getSubColumns(row) {
-        throw new Error('not implemented');
-    }
-
-    displayTime(value) {
-        const date = new Date(value);
-        const min = date.getMinutes();
-        const sec = date.getSeconds();
-        return `${_.padStart(min, 2, 0)}:${_.padStart(sec, 2, 0)}`;
+    commandsCountColumn() {
+        return {
+            Header: 'Кол-во команд',
+            accessor: 'count',
+            width: 120
+        };
     }
 
     testDurationColumn() {
@@ -75,6 +77,30 @@ class PanelBase extends React.Component {
         };
     }
 
+    makeFullWidth(column) {
+        delete column.width;
+        return column;
+    }
+
+    displayTime(value) {
+        const date = new Date(value);
+        const min = date.getMinutes();
+        const sec = date.getSeconds();
+        return `${_.padStart(min, 2, 0)}:${_.padStart(sec, 2, 0)}`;
+    }
+
+    getColumns() {
+        throw new Error('not implemented');
+    }
+
+    hasSubColumns() {
+        throw new Error('not implemented');
+    }
+
+    getSubColumns(row) {
+        throw new Error('not implemented');
+    }
+
     drawDetailTable(row) {
         throw new Error('not implemented');
     }
@@ -89,7 +115,9 @@ class PanelBase extends React.Component {
                 filterable={true}
                 showPagination={true}
                 defaultPageSize={100}
-                SubComponent={this.drawDetailTable.bind(this)}
+                defaultFilterMethod={(filter, row) =>
+                    row[filter.id].toLowerCase().indexOf(filter.value.toLowerCase()) !== -1}
+                SubComponent={this.hasSubColumns() ? this.drawDetailTable.bind(this) : undefined}
             />
         );
     }

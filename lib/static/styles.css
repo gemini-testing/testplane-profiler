@@ -18,3 +18,7 @@ body {
 .tab {
     background-color: rgb(2, 160, 124) !important;
 }
+
+.ReactTable .rt-tr input {
+    font-size: 1em;
+}
