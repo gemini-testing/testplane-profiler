@@ -1,6 +1,6 @@
 {
   "name": "hermione-profiler",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Plugin for hermione for commands execution profiling",
   "scripts": {
     "lint": "eslint .",
