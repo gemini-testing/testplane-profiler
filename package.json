@@ -27,9 +27,11 @@
   "homepage": "https://github.com/gemini-testing/hermione-profiler#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "chart.js": "^2.7.2",
     "fs-extra": "^4.0.2",
     "gemini-configparser": "^1.0.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "react-chartjs-2": "^2.7.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

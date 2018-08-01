@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const fs = require('fs-extra');
 const proxyquire = require('proxyquire');
 const EventEmitter = require('events').EventEmitter;
@@ -10,15 +11,26 @@ const mkHermione = () => {
 
     emitter.events = {
         RUNNER_START: 'runner-start',
-        TEST_PASS: 'test-pass',
-        TEST_FAIL: 'test-fail',
+        TEST_BEGIN: 'test-begin',
+        TEST_END: 'test-end',
         RETRY: 'retry',
         ERROR: 'critical-error',
         RUNNER_END: 'runner-end',
         NEW_BROWSER: 'new-browser'
     };
 
+    emitter.config = {
+        getBrowserIds: sinon.stub().returns(['default-bro'])
+    };
+
     return emitter;
+};
+
+const mkTest = (opts = {}) => {
+    return _.defaults(opts, {
+        fullTitle: () => 'default title',
+        browserId: 'default-bro'
+    });
 };
 
 describe('plugin', () => {
@@ -68,14 +80,70 @@ describe('plugin', () => {
         assert.calledOnce(StreamWriter.create);
     });
 
-    ['TEST_FAIL', 'TEST_PASS', 'RETRY'].forEach((eventName) => {
-        it(`should write data to stream on ${eventName} event`, () => {
+    describe('on TEST_BEGIN', () => {
+        beforeEach(() => {
+            initPlugin_();
+        });
+
+        it('should set timeStart for test', () => {
+            sandbox.stub(Date, 'now').returns(100500);
+            const test = mkTest();
+
+            hermione.emit(hermione.events.TEST_BEGIN, test);
+
+            assert.propertyVal(test, 'timeStart', 100500);
+        });
+
+        it('should do nothing for pending tests', () => {
+            const test = mkTest({pending: true});
+
+            hermione.emit(hermione.events.TEST_BEGIN, test);
+
+            assert.notProperty(test, 'timeStart');
+        });
+
+        it('should set retry if test was retried', () => {
+            const test = mkTest();
+
+            hermione.emit(hermione.events.RETRY, test);
+            hermione.emit(hermione.events.TEST_BEGIN, test);
+
+            assert.propertyVal(test, 'retry', 1);
+        });
+    });
+
+    describe('on TEST_END', () => {
+        beforeEach(() => {
+            initPlugin_();
+            hermione.emit(hermione.events.RUNNER_START);
+        });
+
+        it('should set timeEnd for test', () => {
+            sandbox.stub(Date, 'now').returns(100500);
+            const test = mkTest();
+
+            hermione.emit(hermione.events.TEST_END, test);
+
+            assert.propertyVal(test, 'timeEnd', 100500);
+        });
+
+        it('should write data to stream', () => {
+            const test = mkTest();
+
+            hermione.emit(hermione.events.TEST_END, test);
+
+            assert.calledOnceWith(stream.write, test);
+        });
+
+        it('should do nothing for pending tests', () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events[eventName], {foo: 'bar'});
+            const test = mkTest({pending: true});
 
-            assert.calledOnceWith(stream.write, {foo: 'bar'});
+            hermione.emit(hermione.events.TEST_END, test);
+
+            assert.notProperty(test, 'timeEnd');
+            assert.notCalled(stream.write);
         });
     });
 
