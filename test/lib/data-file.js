@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs-extra');
-const StreamWriter = require('../../lib/stream-writer');
+const DataFile = require('../../lib/data-file');
 
 describe('stream writer', () => {
     const sandbox = sinon.sandbox.create();
@@ -28,13 +28,13 @@ describe('stream writer', () => {
 
     describe('create', () => {
         it('should create directory for report', () => {
-            StreamWriter.create('report/path');
+            DataFile.create('report/path');
 
             assert.calledOnceWith(fs.ensureDirSync, 'report/path');
         });
 
         it('should create write stream to the passed path', () => {
-            StreamWriter.create('report/path');
+            DataFile.create('report/path');
 
             assert.calledOnceWith(fs.createWriteStream, 'report/path/data.js');
         });
@@ -42,7 +42,7 @@ describe('stream writer', () => {
 
     describe('write', () => {
         it('should write opening bracket at first call', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
 
             stream.write(dataStub());
 
@@ -50,7 +50,7 @@ describe('stream writer', () => {
         });
 
         it('should write object with "n" property as "fullTitle"', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
             const data = dataStub({fullTitle: 'test1'});
 
             stream.write(data);
@@ -59,7 +59,7 @@ describe('stream writer', () => {
         });
 
         it('should write object with command list from data', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
             const data = dataStub({
                 fullTitle: 'test1',
                 hermioneCtx: {
@@ -74,7 +74,7 @@ describe('stream writer', () => {
         });
 
         it('should write object with empty command list if it does not exist in data', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
             const data = dataStub({fullTitle: 'test1'});
 
             stream.write(data);
@@ -84,7 +84,7 @@ describe('stream writer', () => {
         });
 
         it('should divide data chains with comma delimiter', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
 
             stream.write(dataStub());
             stream.write(dataStub());
@@ -96,7 +96,7 @@ describe('stream writer', () => {
 
     describe('end', () => {
         it('should end stream with the closing bracket', () => {
-            const stream = StreamWriter.create('report/path');
+            const stream = DataFile.create('report/path');
 
             stream.end();
             assert.calledOnceWith(streamStub.end, ']');

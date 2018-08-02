@@ -4,7 +4,7 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs-extra');
 const parseConfig = require('./lib/config');
-const StreamWriter = require('./lib/stream-writer');
+const DataFile = require('./lib/data-file');
 const wrapCommands = require('./lib/commands-wrapper');
 
 module.exports = (hermione, opts) => {
@@ -14,14 +14,14 @@ module.exports = (hermione, opts) => {
         return;
     }
 
-    let writeStream;
+    let dataFile;
     const retriesMap = _(hermione.config.getBrowserIds())
         .zipObject()
         .mapValues(() => new Map())
         .value();
 
     hermione.on(hermione.events.RUNNER_START, () => {
-        writeStream = StreamWriter.create(pluginConfig.path);
+        dataFile = DataFile.create(pluginConfig.path);
     });
 
     hermione.on(hermione.events.RETRY, (test) => {
@@ -49,15 +49,15 @@ module.exports = (hermione, opts) => {
         }
 
         test.timeEnd = Date.now();
-        writeStream.write(test);
+        dataFile.write(test);
     });
 
-    hermione.on(hermione.events.ERROR, () => writeStream.end());
+    hermione.on(hermione.events.ERROR, () => dataFile.end());
 
     hermione.on(hermione.events.NEW_BROWSER, wrapCommands);
 
     hermione.on(hermione.events.RUNNER_END, () => {
-        writeStream.end();
+        dataFile.end();
         copyToReportDir(pluginConfig.path, ['index.html', 'bundle.min.js', 'styles.css']);
     });
 };

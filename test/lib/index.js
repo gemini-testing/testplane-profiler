@@ -4,7 +4,7 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const proxyquire = require('proxyquire');
 const EventEmitter = require('events').EventEmitter;
-const StreamWriter = require('../../lib/stream-writer');
+const DataFile = require('../../lib/data-file');
 
 const mkHermione = () => {
     const emitter = new EventEmitter();
@@ -54,7 +54,7 @@ describe('plugin', () => {
             write: sandbox.stub().named('write'),
             end: sandbox.stub().named('end')
         };
-        sandbox.stub(StreamWriter, 'create').returns(stream);
+        sandbox.stub(DataFile, 'create').returns(stream);
         sandbox.stub(fs, 'copySync');
     });
 
@@ -72,12 +72,12 @@ describe('plugin', () => {
         assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 0);
     });
 
-    it('should create stream on RUNNER_START', () => {
+    it('should create data file on RUNNER_START', () => {
         initPlugin_();
 
         hermione.emit(hermione.events.RUNNER_START);
 
-        assert.calledOnce(StreamWriter.create);
+        assert.calledOnce(DataFile.create);
     });
 
     describe('on TEST_BEGIN', () => {
@@ -127,7 +127,7 @@ describe('plugin', () => {
             assert.propertyVal(test, 'timeEnd', 100500);
         });
 
-        it('should write data to stream', () => {
+        it('should write data to data file', () => {
             const test = mkTest();
 
             hermione.emit(hermione.events.TEST_END, test);
@@ -147,7 +147,7 @@ describe('plugin', () => {
         });
     });
 
-    describe('should close stream', () => {
+    describe('should finalize data file', () => {
         it('on error', () => {
             initPlugin_();
 
