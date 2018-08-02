@@ -154,6 +154,8 @@ describe('plugin', () => {
                 assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
             });
         });
+
+        it('should copy files asynchronously');
     });
 
     describe('on NEW_BROWSER', () => {
