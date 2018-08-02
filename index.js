@@ -9,7 +9,6 @@ const wrapCommands = require('./lib/commands-wrapper');
 
 module.exports = (hermione, opts) => {
     const pluginConfig = parseConfig(opts);
-
     if (!pluginConfig.enabled) {
         return;
     }
@@ -19,15 +18,11 @@ module.exports = (hermione, opts) => {
         return;
     }
 
-    let dataFile;
+    let dataFile = DataFile.create(pluginConfig.path);
     const retriesMap = _(hermione.config.getBrowserIds())
         .zipObject()
         .mapValues(() => new Map())
         .value();
-
-    hermione.on(hermione.events.RUNNER_START, () => {
-        dataFile = DataFile.create(pluginConfig.path);
-    });
 
     hermione.on(hermione.events.RETRY, (test) => {
         const fullTitle = test.fullTitle();

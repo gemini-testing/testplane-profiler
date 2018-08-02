@@ -26,6 +26,8 @@ describe('stream writer', () => {
 
     afterEach(() => sandbox.restore());
 
+    it('should not do any fs stuff on create');
+
     describe('create', () => {
         it('should create directory for report', () => {
             DataFile.create('report/path');

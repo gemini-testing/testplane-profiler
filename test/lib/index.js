@@ -10,7 +10,6 @@ const mkHermione = () => {
     const emitter = new EventEmitter();
 
     emitter.events = {
-        RUNNER_START: 'runner-start',
         TEST_BEGIN: 'test-begin',
         TEST_END: 'test-end',
         RETRY: 'retry',
@@ -60,24 +59,16 @@ describe('plugin', () => {
 
     afterEach(() => sandbox.restore());
 
-    it('should be enabled by default', () => {
-        initPlugin_();
+    it('should create data file on plugin load', () => {
+        initPlugin_({path: 'report/dir'});
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 1);
+        assert.calledOnceWith(DataFile.create, 'report/dir');
     });
 
     it('should do nothing if plugin is disabled', () => {
         initPlugin_({enabled: false});
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 0);
-    });
-
-    it('should create data file on RUNNER_START', () => {
-        initPlugin_();
-
-        hermione.emit(hermione.events.RUNNER_START);
-
-        assert.calledOnce(DataFile.create);
+        assert.notCalled(DataFile.create);
     });
 
     describe('on TEST_BEGIN', () => {
@@ -115,7 +106,6 @@ describe('plugin', () => {
     describe('on TEST_END', () => {
         beforeEach(() => {
             initPlugin_();
-            hermione.emit(hermione.events.RUNNER_START);
         });
 
         it('should set timeEnd for test', () => {
@@ -151,7 +141,6 @@ describe('plugin', () => {
         it('on error', () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
             hermione.emit(hermione.events.ERROR);
 
             assert.calledOnce(DataFile.prototype.end);
@@ -160,7 +149,6 @@ describe('plugin', () => {
         it('on runner end', () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
             hermione.emit(hermione.events.RUNNER_END);
 
             assert.calledOnce(DataFile.prototype.end);
@@ -171,7 +159,6 @@ describe('plugin', () => {
         it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
             initPlugin_({path: 'reportDir'});
 
-            hermione.emit(hermione.events.RUNNER_START);
             hermione.emit(hermione.events.RUNNER_END);
 
             assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
