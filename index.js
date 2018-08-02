@@ -14,6 +14,11 @@ module.exports = (hermione, opts) => {
         return;
     }
 
+    if (hermione.isWorker()) {
+        hermione.on(hermione.events.NEW_BROWSER, wrapCommands);
+        return;
+    }
+
     let dataFile;
     const retriesMap = _(hermione.config.getBrowserIds())
         .zipObject()
@@ -53,8 +58,6 @@ module.exports = (hermione, opts) => {
     });
 
     hermione.on(hermione.events.ERROR, () => dataFile.end());
-
-    hermione.on(hermione.events.NEW_BROWSER, wrapCommands);
 
     hermione.on(hermione.events.RUNNER_END, () => {
         dataFile.end();

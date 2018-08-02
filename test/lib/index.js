@@ -23,6 +23,8 @@ const mkHermione = () => {
         getBrowserIds: sinon.stub().returns(['default-bro'])
     };
 
+    emitter.isWorker = sinon.stub().returns(false);
+
     return emitter;
 };
 
@@ -176,11 +178,22 @@ describe('plugin', () => {
         });
     });
 
-    it('should wrap browser commands on NEW_BROWSER', () => {
-        initPlugin_();
+    describe('on NEW_BROWSER', () => {
+        it('should wrap browser commands in worker', () => {
+            hermione.isWorker.returns(true);
+            initPlugin_();
 
-        hermione.emit(hermione.events.NEW_BROWSER);
+            hermione.emit(hermione.events.NEW_BROWSER);
 
-        assert.calledOnce(commandWrapper);
+            assert.calledOnce(commandWrapper);
+        });
+
+        it('should not wrap browser commands in master', () => {
+            initPlugin_();
+
+            hermione.emit(hermione.events.NEW_BROWSER);
+
+            assert.notCalled(commandWrapper);
+        });
     });
 });
