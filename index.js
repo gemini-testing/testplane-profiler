@@ -52,8 +52,8 @@ module.exports = (hermione, opts) => {
         dataFile.write(test);
     });
 
-    hermione.on(hermione.events.RUNNER_END, () => {
-        dataFile.end();
+    hermione.on(hermione.events.RUNNER_END, async () => {
+        await dataFile.end();
         copyToReportDir(pluginConfig.path, ['index.html', 'bundle.min.js', 'styles.css']);
     });
 };

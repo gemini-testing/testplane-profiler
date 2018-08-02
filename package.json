@@ -43,7 +43,7 @@
     "chai": "^4.0.2",
     "css-loader": "^0.28.7",
     "eslint": "^3.19.0",
-    "eslint-config-gemini-testing": "^2.4.0",
+    "eslint-config-gemini-testing": "^2.8.0",
     "material-ui": "^0.19.3",
     "mocha": "^3.4.2",
     "proxyquire": "^1.8.0",

@@ -137,19 +137,19 @@ describe('plugin', () => {
     });
 
     describe('on RUNNER_END', () => {
-        it('should finalize data file', () => {
+        it('should finalize data file', async () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_END);
+            await hermione.emit(hermione.events.RUNNER_END);
 
             assert.calledOnce(DataFile.prototype.end);
         });
 
         ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
-            it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
+            it(`should copy "${fileName}" service file to the report dir on runner end`, async () => {
                 initPlugin_({path: 'reportDir'});
 
-                hermione.emit(hermione.events.RUNNER_END);
+                await hermione.emit(hermione.events.RUNNER_END);
 
                 assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
             });

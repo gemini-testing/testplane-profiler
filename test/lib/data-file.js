@@ -27,6 +27,7 @@ describe('stream writer', () => {
     afterEach(() => sandbox.restore());
 
     it('should not do any fs stuff on create');
+    it('should return promise on end call');
 
     describe('create', () => {
         it('should create directory for report', () => {
