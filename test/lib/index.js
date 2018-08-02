@@ -13,7 +13,6 @@ const mkHermione = () => {
         TEST_BEGIN: 'test-begin',
         TEST_END: 'test-end',
         RETRY: 'retry',
-        ERROR: 'critical-error',
         RUNNER_END: 'runner-end',
         NEW_BROWSER: 'new-browser'
     };
@@ -137,31 +136,23 @@ describe('plugin', () => {
         });
     });
 
-    describe('should finalize data file', () => {
-        it('on error', () => {
-            initPlugin_();
-
-            hermione.emit(hermione.events.ERROR);
-
-            assert.calledOnce(DataFile.prototype.end);
-        });
-
-        it('on runner end', () => {
+    describe('on RUNNER_END', () => {
+        it('should finalize data file', () => {
             initPlugin_();
 
             hermione.emit(hermione.events.RUNNER_END);
 
             assert.calledOnce(DataFile.prototype.end);
         });
-    });
 
-    ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
-        it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
-            initPlugin_({path: 'reportDir'});
+        ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
+            it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
+                initPlugin_({path: 'reportDir'});
 
-            hermione.emit(hermione.events.RUNNER_END);
+                hermione.emit(hermione.events.RUNNER_END);
 
-            assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
+                assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
+            });
         });
     });
 
