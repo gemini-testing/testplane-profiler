@@ -37,7 +37,6 @@ describe('plugin', () => {
     const sandbox = sinon.sandbox.create();
     let hermione;
     let plugin;
-    let stream;
     let commandWrapper;
 
     const initPlugin_ = (opts = {}) => {
@@ -50,11 +49,10 @@ describe('plugin', () => {
 
     beforeEach(() => {
         hermione = mkHermione();
-        stream = {
-            write: sandbox.stub().named('write'),
-            end: sandbox.stub().named('end')
-        };
-        sandbox.stub(DataFile, 'create').returns(stream);
+
+        sandbox.stub(DataFile, 'create').returns(Object.create(DataFile.prototype));
+        sandbox.stub(DataFile.prototype);
+
         sandbox.stub(fs, 'copySync');
     });
 
@@ -132,7 +130,7 @@ describe('plugin', () => {
 
             hermione.emit(hermione.events.TEST_END, test);
 
-            assert.calledOnceWith(stream.write, test);
+            assert.calledOnceWith(DataFile.prototype.write, test);
         });
 
         it('should do nothing for pending tests', () => {
@@ -143,7 +141,7 @@ describe('plugin', () => {
             hermione.emit(hermione.events.TEST_END, test);
 
             assert.notProperty(test, 'timeEnd');
-            assert.notCalled(stream.write);
+            assert.notCalled(DataFile.prototype.write);
         });
     });
 
@@ -154,7 +152,7 @@ describe('plugin', () => {
             hermione.emit(hermione.events.RUNNER_START);
             hermione.emit(hermione.events.ERROR);
 
-            assert.calledOnce(stream.end);
+            assert.calledOnce(DataFile.prototype.end);
         });
 
         it('on runner end', () => {
@@ -163,7 +161,7 @@ describe('plugin', () => {
             hermione.emit(hermione.events.RUNNER_START);
             hermione.emit(hermione.events.RUNNER_END);
 
-            assert.calledOnce(stream.end);
+            assert.calledOnce(DataFile.prototype.end);
         });
     });
 
