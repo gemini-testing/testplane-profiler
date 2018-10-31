@@ -7,6 +7,8 @@ class PanelCommands extends PanelBase {
     getColumns() {
         return [].concat(
             this.commandsCountColumn(),
+            this.timeSumColumn(),
+            this.exclusiveTimeSumColumn(),
             this.percentileColumn(95),
             this.percentileColumn(80),
             this.percentileColumn(50),
@@ -25,6 +27,24 @@ class PanelCommands extends PanelBase {
             accessor: 'd.length',
             width: 75
         };
+    }
+
+    timeSumColumn() {
+        return {
+            Header: 'Время вкл., мс',
+            getHeaderProps: () => ({title: 'Суммарное время работы команды, включая вложенные'}),
+            accessor: 'dSum',
+            width: 120
+        }
+    }
+
+    exclusiveTimeSumColumn() {
+        return {
+            Header: 'Время искл., мс',
+            getHeaderProps: () => ({title: 'Суммарное время работы команды, исключая вложенные'}),
+            accessor: 'dExclusiveSum',
+            width: 120
+        }
     }
 
     percentileColumn(percentile) {
