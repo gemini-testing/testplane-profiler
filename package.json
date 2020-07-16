@@ -42,7 +42,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.0.2",
     "css-loader": "^0.28.7",
-    "eslint": "^3.19.0",
+    "eslint": "^4.18.2",
     "eslint-config-gemini-testing": "^2.4.0",
     "material-ui": "^0.19.3",
     "mocha": "^3.4.2",
