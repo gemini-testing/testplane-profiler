@@ -4,17 +4,15 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const proxyquire = require('proxyquire');
 const EventEmitter = require('events').EventEmitter;
-const StreamWriter = require('../../lib/stream-writer');
+const DataFile = require('../../lib/data-file');
 
 const mkHermione = () => {
     const emitter = new EventEmitter();
 
     emitter.events = {
-        RUNNER_START: 'runner-start',
         TEST_BEGIN: 'test-begin',
         TEST_END: 'test-end',
         RETRY: 'retry',
-        ERROR: 'critical-error',
         RUNNER_END: 'runner-end',
         NEW_BROWSER: 'new-browser'
     };
@@ -22,6 +20,8 @@ const mkHermione = () => {
     emitter.config = {
         getBrowserIds: sinon.stub().returns(['default-bro'])
     };
+
+    emitter.isWorker = sinon.stub().returns(false);
 
     return emitter;
 };
@@ -37,7 +37,6 @@ describe('plugin', () => {
     const sandbox = sinon.sandbox.create();
     let hermione;
     let plugin;
-    let stream;
     let commandWrapper;
 
     const initPlugin_ = (opts = {}) => {
@@ -50,34 +49,25 @@ describe('plugin', () => {
 
     beforeEach(() => {
         hermione = mkHermione();
-        stream = {
-            write: sandbox.stub().named('write'),
-            end: sandbox.stub().named('end')
-        };
-        sandbox.stub(StreamWriter, 'create').returns(stream);
+
+        sandbox.stub(DataFile, 'create').returns(Object.create(DataFile.prototype));
+        sandbox.stub(DataFile.prototype);
+
         sandbox.stub(fs, 'copySync');
     });
 
     afterEach(() => sandbox.restore());
 
-    it('should be enabled by default', () => {
-        initPlugin_();
+    it('should create data file on plugin load', () => {
+        initPlugin_({path: 'report/dir'});
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 1);
+        assert.calledOnceWith(DataFile.create, 'report/dir');
     });
 
     it('should do nothing if plugin is disabled', () => {
         initPlugin_({enabled: false});
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 0);
-    });
-
-    it('should create stream on RUNNER_START', () => {
-        initPlugin_();
-
-        hermione.emit(hermione.events.RUNNER_START);
-
-        assert.calledOnce(StreamWriter.create);
+        assert.notCalled(DataFile.create);
     });
 
     describe('on TEST_BEGIN', () => {
@@ -115,7 +105,6 @@ describe('plugin', () => {
     describe('on TEST_END', () => {
         beforeEach(() => {
             initPlugin_();
-            hermione.emit(hermione.events.RUNNER_START);
         });
 
         it('should set timeEnd for test', () => {
@@ -127,12 +116,12 @@ describe('plugin', () => {
             assert.propertyVal(test, 'timeEnd', 100500);
         });
 
-        it('should write data to stream', () => {
+        it('should write data to data file', () => {
             const test = mkTest();
 
             hermione.emit(hermione.events.TEST_END, test);
 
-            assert.calledOnceWith(stream.write, test);
+            assert.calledOnceWith(DataFile.prototype.write, test);
         });
 
         it('should do nothing for pending tests', () => {
@@ -143,46 +132,48 @@ describe('plugin', () => {
             hermione.emit(hermione.events.TEST_END, test);
 
             assert.notProperty(test, 'timeEnd');
-            assert.notCalled(stream.write);
+            assert.notCalled(DataFile.prototype.write);
         });
     });
 
-    describe('should close stream', () => {
-        it('on error', () => {
+    describe('on RUNNER_END', () => {
+        it('should finalize data file', async () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.ERROR);
+            await hermione.emit(hermione.events.RUNNER_END);
 
-            assert.calledOnce(stream.end);
+            assert.calledOnce(DataFile.prototype.end);
         });
 
-        it('on runner end', () => {
+        ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
+            it(`should copy "${fileName}" service file to the report dir on runner end`, async () => {
+                initPlugin_({path: 'reportDir'});
+
+                await hermione.emit(hermione.events.RUNNER_END);
+
+                assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
+            });
+        });
+
+        it('should copy files asynchronously');
+    });
+
+    describe('on NEW_BROWSER', () => {
+        it('should wrap browser commands in worker', () => {
+            hermione.isWorker.returns(true);
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.RUNNER_END);
+            hermione.emit(hermione.events.NEW_BROWSER);
 
-            assert.calledOnce(stream.end);
+            assert.calledOnce(commandWrapper);
         });
-    });
 
-    ['index.html', 'bundle.min.js', 'styles.css'].forEach((fileName, i) => {
-        it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
-            initPlugin_({path: 'reportDir'});
+        it('should not wrap browser commands in master', () => {
+            initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.RUNNER_END);
+            hermione.emit(hermione.events.NEW_BROWSER);
 
-            assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
+            assert.notCalled(commandWrapper);
         });
-    });
-
-    it('should wrap browser commands on NEW_BROWSER', () => {
-        initPlugin_();
-
-        hermione.emit(hermione.events.NEW_BROWSER);
-
-        assert.calledOnce(commandWrapper);
     });
 });
