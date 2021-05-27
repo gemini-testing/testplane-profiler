@@ -25,7 +25,7 @@ class PanelSessions extends PanelBase {
     }
 
     drawDetailTable(row) {
-        const data = row.original.cl;
+        const data = row.original.c;
         const columns = this.getSubColumns(row);
 
         return (

@@ -34,11 +34,11 @@ class PanelTimeline extends PanelBase {
 
         const groupSessions = (threads) => {
             return threads.map((thread) => {
-                return thread.reduce((acc, {ts, te, sid}) => {
-                    if (!_.isEmpty(acc) && _.last(acc).sid === sid) {
+                return thread.reduce((acc, {ts, te, s}) => {
+                    if (!_.isEmpty(acc) && _.last(acc).s === s) {
                         _.last(acc).te = te;
                     } else {
-                        acc.push({ts, te, sid});
+                        acc.push({ts, te, s});
                     }
 
                     return acc;
