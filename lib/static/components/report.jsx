@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import PanelTests from './panel-tests.jsx';

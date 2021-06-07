@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 
 import React from 'react';
@@ -24,7 +22,7 @@ class PanelBase extends React.Component {
     browserColumn() {
         return {
             Header: 'Название браузера',
-            accessor: 'bid',
+            accessor: 'b',
             width: 150
         };
     }
@@ -32,7 +30,7 @@ class PanelBase extends React.Component {
     sessionColumn() {
         return {
             Header: 'id сессии',
-            accessor: 'sid',
+            accessor: 's',
             width: 200
         };
     }
@@ -40,7 +38,7 @@ class PanelBase extends React.Component {
     commandColumn() {
         return {
             Header: 'Название команды',
-            accessor: 'cn',
+            accessor: 'n',
             width: 400
         };
     }
