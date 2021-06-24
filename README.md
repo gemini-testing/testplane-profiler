@@ -1,6 +1,8 @@
 # hermione-profiler
 hermione profiler
 
+Requires **[hermione](https://github.com/gemini-testing/hermione)@4.x**.
+
 ## Installation
 
 ```

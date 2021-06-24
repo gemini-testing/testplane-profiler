@@ -177,12 +177,4 @@ describe('plugin', () => {
             assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
         });
     });
-
-    it('should wrap browser commands on NEW_BROWSER', () => {
-        initPlugin_();
-
-        hermione.emit(hermione.events.NEW_BROWSER);
-
-        assert.calledOnce(commandWrapper);
-    });
 });

@@ -5,7 +5,6 @@ const path = require('path');
 const fs = require('fs-extra');
 const parseConfig = require('./lib/config');
 const StreamWriter = require('./lib/stream-writer');
-const wrapCommands = require('./lib/commands-wrapper');
 
 module.exports = (hermione, opts) => {
     const pluginConfig = parseConfig(opts);
@@ -38,11 +37,14 @@ module.exports = (hermione, opts) => {
         }
 
         test.timeStart = Date.now();
+
         const retry = retriesMap[test.browserId].get(test.fullTitle());
+
         if (retry) {
             test.retry = retry;
         }
     });
+
     hermione.on(hermione.events.TEST_END, (test) => {
         if (test.pending) {
             return;
@@ -53,8 +55,6 @@ module.exports = (hermione, opts) => {
     });
 
     hermione.on(hermione.events.ERROR, () => writeStream.end());
-
-    hermione.on(hermione.events.NEW_BROWSER, wrapCommands);
 
     hermione.on(hermione.events.RUNNER_END, () => {
         writeStream.end();

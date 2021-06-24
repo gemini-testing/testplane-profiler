@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import ReactTable from './table';
 import PanelBase from './panel-base.jsx';
@@ -25,7 +23,7 @@ class PanelSessions extends PanelBase {
     }
 
     drawDetailTable(row) {
-        const data = row.original.cl;
+        const data = row.original.c;
         const columns = this.getSubColumns(row);
 
         return (
