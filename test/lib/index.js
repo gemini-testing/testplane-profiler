@@ -6,7 +6,7 @@ const proxyquire = require('proxyquire');
 const EventEmitter = require('events').EventEmitter;
 const StreamWriter = require('../../lib/stream-writer');
 
-const mkHermione = () => {
+const mkTestplane = () => {
     const emitter = new EventEmitter();
 
     emitter.events = {
@@ -35,7 +35,7 @@ const mkTest = (opts = {}) => {
 
 describe('plugin', () => {
     const sandbox = sinon.sandbox.create();
-    let hermione;
+    let testplane;
     let plugin;
     let stream;
     let commandWrapper;
@@ -45,11 +45,11 @@ describe('plugin', () => {
         plugin = proxyquire('../../index', {
             './lib/commands-wrapper': commandWrapper
         });
-        plugin(hermione, opts);
+        plugin(testplane, opts);
     };
 
     beforeEach(() => {
-        hermione = mkHermione();
+        testplane = mkTestplane();
         stream = {
             write: sandbox.stub().named('write'),
             end: sandbox.stub().named('end')
@@ -63,19 +63,19 @@ describe('plugin', () => {
     it('should be enabled by default', () => {
         initPlugin_();
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 1);
+        assert.equal(testplane.listeners(testplane.events.RUNNER_START).length, 1);
     });
 
     it('should do nothing if plugin is disabled', () => {
         initPlugin_({enabled: false});
 
-        assert.equal(hermione.listeners(hermione.events.RUNNER_START).length, 0);
+        assert.equal(testplane.listeners(testplane.events.RUNNER_START).length, 0);
     });
 
     it('should create stream on RUNNER_START', () => {
         initPlugin_();
 
-        hermione.emit(hermione.events.RUNNER_START);
+        testplane.emit(testplane.events.RUNNER_START);
 
         assert.calledOnce(StreamWriter.create);
     });
@@ -89,7 +89,7 @@ describe('plugin', () => {
             sandbox.stub(Date, 'now').returns(100500);
             const test = mkTest();
 
-            hermione.emit(hermione.events.TEST_BEGIN, test);
+            testplane.emit(testplane.events.TEST_BEGIN, test);
 
             assert.propertyVal(test, 'timeStart', 100500);
         });
@@ -97,7 +97,7 @@ describe('plugin', () => {
         it('should do nothing for pending tests', () => {
             const test = mkTest({pending: true});
 
-            hermione.emit(hermione.events.TEST_BEGIN, test);
+            testplane.emit(testplane.events.TEST_BEGIN, test);
 
             assert.notProperty(test, 'timeStart');
         });
@@ -105,8 +105,8 @@ describe('plugin', () => {
         it('should set retry if test was retried', () => {
             const test = mkTest();
 
-            hermione.emit(hermione.events.RETRY, test);
-            hermione.emit(hermione.events.TEST_BEGIN, test);
+            testplane.emit(testplane.events.RETRY, test);
+            testplane.emit(testplane.events.TEST_BEGIN, test);
 
             assert.propertyVal(test, 'retry', 1);
         });
@@ -115,14 +115,14 @@ describe('plugin', () => {
     describe('on TEST_END', () => {
         beforeEach(() => {
             initPlugin_();
-            hermione.emit(hermione.events.RUNNER_START);
+            testplane.emit(testplane.events.RUNNER_START);
         });
 
         it('should set timeEnd for test', () => {
             sandbox.stub(Date, 'now').returns(100500);
             const test = mkTest();
 
-            hermione.emit(hermione.events.TEST_END, test);
+            testplane.emit(testplane.events.TEST_END, test);
 
             assert.propertyVal(test, 'timeEnd', 100500);
         });
@@ -130,7 +130,7 @@ describe('plugin', () => {
         it('should write data to stream', () => {
             const test = mkTest();
 
-            hermione.emit(hermione.events.TEST_END, test);
+            testplane.emit(testplane.events.TEST_END, test);
 
             assert.calledOnceWith(stream.write, test);
         });
@@ -140,7 +140,7 @@ describe('plugin', () => {
 
             const test = mkTest({pending: true});
 
-            hermione.emit(hermione.events.TEST_END, test);
+            testplane.emit(testplane.events.TEST_END, test);
 
             assert.notProperty(test, 'timeEnd');
             assert.notCalled(stream.write);
@@ -151,8 +151,8 @@ describe('plugin', () => {
         it('on error', () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.ERROR);
+            testplane.emit(testplane.events.RUNNER_START);
+            testplane.emit(testplane.events.ERROR);
 
             assert.calledOnce(stream.end);
         });
@@ -160,8 +160,8 @@ describe('plugin', () => {
         it('on runner end', () => {
             initPlugin_();
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.RUNNER_END);
+            testplane.emit(testplane.events.RUNNER_START);
+            testplane.emit(testplane.events.RUNNER_END);
 
             assert.calledOnce(stream.end);
         });
@@ -171,8 +171,8 @@ describe('plugin', () => {
         it(`should copy "${fileName}" service file to the report dir on runner end`, () => {
             initPlugin_({path: 'reportDir'});
 
-            hermione.emit(hermione.events.RUNNER_START);
-            hermione.emit(hermione.events.RUNNER_END);
+            testplane.emit(testplane.events.RUNNER_START);
+            testplane.emit(testplane.events.RUNNER_END);
 
             assert.equal(fs.copySync.args[i][1], `reportDir/${fileName}`);
         });
