@@ -6,7 +6,7 @@ const fs = require('fs-extra');
 const parseConfig = require('./lib/config');
 const StreamWriter = require('./lib/stream-writer');
 
-module.exports = (hermione, opts) => {
+module.exports = (testplane, opts) => {
     const pluginConfig = parseConfig(opts);
 
     if (!pluginConfig.enabled) {
@@ -14,16 +14,16 @@ module.exports = (hermione, opts) => {
     }
 
     let writeStream;
-    const retriesMap = _(hermione.config.getBrowserIds())
+    const retriesMap = _(testplane.config.getBrowserIds())
         .zipObject()
         .mapValues(() => new Map())
         .value();
 
-    hermione.on(hermione.events.RUNNER_START, () => {
+    testplane.on(testplane.events.RUNNER_START, () => {
         writeStream = StreamWriter.create(pluginConfig.path);
     });
 
-    hermione.on(hermione.events.RETRY, (test) => {
+    testplane.on(testplane.events.RETRY, (test) => {
         const fullTitle = test.fullTitle();
 
         const retries = retriesMap[test.browserId];
@@ -31,7 +31,7 @@ module.exports = (hermione, opts) => {
         retries.set(fullTitle, retry + 1);
     });
 
-    hermione.on(hermione.events.TEST_BEGIN, (test) => {
+    testplane.on(testplane.events.TEST_BEGIN, (test) => {
         if (test.pending) {
             return;
         }
@@ -45,7 +45,7 @@ module.exports = (hermione, opts) => {
         }
     });
 
-    hermione.on(hermione.events.TEST_END, (test) => {
+    testplane.on(testplane.events.TEST_END, (test) => {
         if (test.pending) {
             return;
         }
@@ -54,9 +54,9 @@ module.exports = (hermione, opts) => {
         writeStream.write(test);
     });
 
-    hermione.on(hermione.events.ERROR, () => writeStream.end());
+    testplane.on(testplane.events.ERROR, () => writeStream.end());
 
-    hermione.on(hermione.events.RUNNER_END, () => {
+    testplane.on(testplane.events.RUNNER_END, () => {
         writeStream.end();
         copyToReportDir(pluginConfig.path, ['index.html', 'bundle.min.js', 'styles.css']);
     });

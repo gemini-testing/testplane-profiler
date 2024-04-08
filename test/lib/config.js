@@ -10,8 +10,8 @@ describe('config', () => {
     afterEach(function() {
         process.argv = this.oldArgv;
 
-        delete process.env['hermione_profiler_enabled'];
-        delete process.env['hermione_profiler_path'];
+        delete process.env['testplane_profiler_enabled'];
+        delete process.env['testplane_profiler_path'];
     });
 
     describe('enabled', () => {
@@ -30,7 +30,7 @@ describe('config', () => {
         });
 
         it('should be set from environment variable', () => {
-            process.env['hermione_profiler_enabled'] = 'false';
+            process.env['testplane_profiler_enabled'] = 'false';
             console.log(process.argv);
 
             assert.isFalse(parseConfig({}).enabled);
@@ -38,8 +38,8 @@ describe('config', () => {
     });
 
     describe('path', () => {
-        it('should be "hermione-profiler" by default', () => {
-            assert.equal(parseConfig({}).path, 'hermione-profiler');
+        it('should be "testplane-profiler" by default', () => {
+            assert.equal(parseConfig({}).path, 'testplane-profiler');
         });
 
         it('should be set from configuration', () => {
@@ -53,7 +53,7 @@ describe('config', () => {
         });
 
         it('should be set from environment variable', () => {
-            process.env['hermione_profiler_path'] = 'some/path';
+            process.env['testplane_profiler_path'] = 'some/path';
 
             assert.equal(parseConfig({}).path, 'some/path');
         });

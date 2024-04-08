@@ -1,7 +1,7 @@
 {
-  "name": "hermione-profiler",
-  "version": "0.6.0",
-  "description": "Plugin for hermione for commands execution profiling",
+  "name": "@testplane/profiler",
+  "version": "0.0.1",
+  "description": "Plugin for Testplane for commands execution profiling",
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint && npm run test-unit",
@@ -12,9 +12,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gemini-testing/hermione-profiler.git"
+    "url": "git+ssh://git@github.com/gemini-testing/testplane-profiler.git"
   },
   "keywords": [
+    "testplane",
     "hermione",
     "plugin",
     "profiler"
@@ -22,9 +23,9 @@
   "author": "Anton Usmansky <j0tunn@ya.ru>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gemini-testing/hermione-profiler/issues"
+    "url": "https://github.com/gemini-testing/testplane-profiler/issues"
   },
-  "homepage": "https://github.com/gemini-testing/hermione-profiler#readme",
+  "homepage": "https://github.com/gemini-testing/testplane-profiler#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
     "chart.js": "^2.7.2",

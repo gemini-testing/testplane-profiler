@@ -1,12 +1,12 @@
-# hermione-profiler
-hermione profiler
+# @testplane/profiler
 
-Requires **[hermione](https://github.com/gemini-testing/hermione)@4.x**.
+Testplane profiler
+
 
 ## Installation
 
 ```
-npm i hermione-profiler
+npm i @testplane/profiler
 ```
 
 ## Usage
@@ -14,4 +14,4 @@ npm i hermione-profiler
 Plugin has following configuration:
 
 - **enabled** (optional) `Boolean` – enable/disable the plugin, by default plugin is enabled;
-- **path** (optional) `String` - path to directory for saving report file; by default report will be saved into `hermione-profiler/index.html` inside current work directory.
+- **path** (optional) `String` - path to directory for saving report file; by default report will be saved into `testplane-profiler/index.html` inside current work directory.
