@@ -29,8 +29,11 @@ class PanelBase extends React.Component {
 
     sessionColumn() {
         return {
-            Header: 'id сессии',
-            accessor: 's',
+            Header: 'Session id',
+            id: 'sessionId',
+            accessor: (data) => {
+                return data.s && data.s !== "undefined" ? data.s : "unknown";
+            },
             width: 200
         };
     }
