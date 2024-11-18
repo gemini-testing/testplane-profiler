@@ -14,14 +14,14 @@ class PanelBase extends React.Component {
 
     testColumn() {
         return {
-            Header: 'Название теста',
+            Header: 'Test name',
             accessor: 'n'
         };
     }
 
     browserColumn() {
         return {
-            Header: 'Название браузера',
+            Header: 'Browser name',
             accessor: 'b',
             width: 150
         };
@@ -40,7 +40,7 @@ class PanelBase extends React.Component {
 
     commandColumn() {
         return {
-            Header: 'Название команды',
+            Header: 'Command name',
             accessor: 'n',
             width: 400
         };
@@ -48,7 +48,7 @@ class PanelBase extends React.Component {
 
     commandDurationColumn() {
         return {
-            Header: 'Время, мс',
+            Header: 'Time, ms',
             accessor: 'd',
             width: 80
         };
@@ -56,7 +56,7 @@ class PanelBase extends React.Component {
 
     commandsCountColumn() {
         return {
-            Header: 'Кол-во команд',
+            Header: 'Commands count',
             accessor: 'count',
             width: 120
         };
@@ -70,7 +70,7 @@ class PanelBase extends React.Component {
         };
 
         return {
-            Header: 'Время, мин',
+            Header: 'Time, min',
             id: 'duration',
             accessor: (data) => this.displayTime(data.d),
             width: 100,

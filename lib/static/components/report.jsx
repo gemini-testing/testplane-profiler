@@ -15,13 +15,13 @@ class Report extends React.Component {
     render() {
         return (
             <Tabs>
-                <Tab className="tab" label="Тесты">
+                <Tab className="tab" label="Tests">
                     <PanelTests data={utils.prepareDataForTestsTab(this.data)}/>
                 </Tab>
-                <Tab className="tab" label="Сессии">
+                <Tab className="tab" label="Sessions">
                     <PanelSessions data={utils.prepareDataForSessionsTab(this.data)}/>
                 </Tab>
-                <Tab className="tab" label="Команды">
+                <Tab className="tab" label="Commands">
                     <PanelCommands data={utils.prepareDataForCommandsTab(this.data)}/>
                 </Tab>
                 <Tab className="tab" label="Timeline">
