@@ -19,7 +19,7 @@ class PanelCommands extends PanelBase {
 
     commandsCountColumn() {
         return {
-            Header: 'Кол-во',
+            Header: 'Count',
             accessor: 'd.length',
             width: 75
         };
@@ -27,7 +27,7 @@ class PanelCommands extends PanelBase {
 
     percentileColumn(percentile) {
         return {
-            Header: `${percentile}-й, мс`,
+            Header: `${percentile}-th, ms`,
             id: `percentile${percentile}`,
             accessor: (data) => Math.floor(data[`percentile${percentile}`]),
             width: 75
