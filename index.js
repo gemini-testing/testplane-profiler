@@ -9,6 +9,8 @@ const StreamWriter = require('./lib/stream-writer');
 module.exports = (testplane, opts) => {
     const pluginConfig = parseConfig(opts);
 
+    Object.assign(opts, pluginConfig);
+
     if (!pluginConfig.enabled) {
         return;
     }
